@@ -1,12 +1,21 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 Shader "UnityShaderBook/Chapter 5/Simple Shader" {
+
+	Properties {
+		// 声明一个Color类型的属性
+		_Color ("Color Tint", Color) = (1.0, 1.0, 1.0, 1.0)
+	}
+
 	SubShader {
 		Pass {
 			CGPROGRAM
 
 			#pragma vertex vert
 			#pragma fragment frag
+
+			// 在代码中，我们需要定义一个与属性名称和类型都匹配的变量
+			fixed4 _Color;
 
 			// 使用一个结构体来定义顶点着色器的输出
 			struct v2f
@@ -43,8 +52,11 @@ Shader "UnityShaderBook/Chapter 5/Simple Shader" {
 			} 
 
 			fixed4 frag(v2f i) : SV_Target {
-				// 将插值后的i.color显示到屏幕上
-				return fixed4(i.color, 1.0);
+				fixed3 c = i.color;
+
+				// 使用_Color属性来控制输出颜色
+				c *= _Color.rgb;
+				return fixed4(c, 1.0);
 			}
 
 			ENDCG
